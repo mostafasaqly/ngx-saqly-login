@@ -1,7 +1,15 @@
 :host {
   display: block;
   width: 100%;
-  font-family: var(--sl-font-family, Inter, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif);
+  font-family: var(
+    --sl-font-family,
+    Inter,
+    "Segoe UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif
+  );
 
   --sl-primary: #6366f1;
   --sl-secondary: #8b5cf6;
@@ -116,6 +124,19 @@
   color: var(--sl-text-primary);
   font-weight: 700;
   cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.saqly-login__social-btn:focus-visible,
+.saqly-login__submit:focus-visible,
+.saqly-login__toggle:focus-visible,
+.saqly-login__forgot:focus-visible,
+.saqly-login__register:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--sl-focus-ring);
 }
 
 .saqly-login__divider {

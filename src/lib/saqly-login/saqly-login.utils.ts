@@ -9,6 +9,7 @@ import {
 import {
   SaqlyLoginColors,
   SaqlyLoginConfig,
+  SaqlyLoginResolvedConfig,
   SaqlyLoginThemeMode,
 } from '../types/saqly-login.types';
 
@@ -28,7 +29,7 @@ export function resolveMode(mode: SaqlyLoginThemeMode): 'dark' | 'light' {
 export function mergeSaqlyLoginConfig(
   localConfig: SaqlyLoginConfig = {},
   globalConfig: SaqlyLoginConfig = {}
-) {
+): SaqlyLoginResolvedConfig {
   const merged = {
     ...SAQLY_LOGIN_DEFAULT_CONFIG,
     ...globalConfig,
@@ -62,5 +63,9 @@ export function mergeSaqlyLoginConfig(
       localConfig.socialButtons ??
       globalConfig.socialButtons ??
       SAQLY_LOGIN_DEFAULT_SOCIAL_BUTTONS,
+    logoTemplate:
+      localConfig.logoTemplate ?? globalConfig.logoTemplate ?? undefined,
+    footerTemplate:
+      localConfig.footerTemplate ?? globalConfig.footerTemplate ?? undefined,
   };
 }

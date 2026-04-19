@@ -30,7 +30,8 @@ export const SAQLY_LOGIN_DARK_COLORS: SaqlyLoginColors = {
   badgeBackground: 'rgba(99, 102, 241, 0.12)',
   badgeBorder: 'rgba(129, 140, 248, 0.28)',
   badgeText: '#c7d2fe',
-  shadow: '0 25px 50px rgba(0, 0, 0, 0.35), 0 10px 25px rgba(99, 102, 241, 0.15)',
+  shadow:
+    '0 25px 50px rgba(0, 0, 0, 0.35), 0 10px 25px rgba(99, 102, 241, 0.15)',
   error: '#f87171',
   checkbox: '#6366f1',
 };
@@ -56,7 +57,8 @@ export const SAQLY_LOGIN_LIGHT_COLORS: SaqlyLoginColors = {
   badgeBackground: 'rgba(79, 70, 229, 0.08)',
   badgeBorder: 'rgba(79, 70, 229, 0.18)',
   badgeText: '#4338ca',
-  shadow: '0 18px 40px rgba(15, 23, 42, 0.12), 0 8px 22px rgba(79, 70, 229, 0.08)',
+  shadow:
+    '0 18px 40px rgba(15, 23, 42, 0.12), 0 8px 22px rgba(79, 70, 229, 0.08)',
   error: '#dc2626',
   checkbox: '#4f46e5',
 };

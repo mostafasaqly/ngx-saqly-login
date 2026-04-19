@@ -13,7 +13,10 @@ import { SAQLY_LOGIN_GLOBAL_CONFIG } from './saqly-login.tokens';
 import { mergeSaqlyLoginConfig } from './saqly-login.utils';
 import {
   SaqlyLoginConfig,
+  SaqlyLoginFooterTemplateContext,
+  SaqlyLoginLogoTemplateContext,
   SaqlyLoginRegisterEvent,
+  SaqlyLoginResolvedConfig,
   SaqlyLoginSocialButton,
   SaqlyLoginSubmitEvent,
 } from '../types/saqly-login.types';
@@ -46,7 +49,7 @@ export class SaqlyLoginComponent {
     private readonly globalConfig: SaqlyLoginConfig | null
   ) {}
 
-  get mergedConfig() {
+  get mergedConfig(): SaqlyLoginResolvedConfig {
     return mergeSaqlyLoginConfig(this.config, this.globalConfig ?? {});
   }
 
@@ -79,12 +82,11 @@ export class SaqlyLoginComponent {
       '--sl-error': c.error,
       '--sl-checkbox': c.checkbox,
       '--sl-card-max-width': this.mergedConfig.cardMaxWidth,
-      '--sl-radius': t.borderRadius ?? '24px',
-      '--sl-card-padding': t.cardPadding ?? '2rem',
-      '--sl-input-height': t.inputHeight ?? '52px',
-      '--sl-button-height': t.buttonHeight ?? '52px',
-      '--sl-font-family':
-        t.fontFamily ?? `Inter, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif`,
+      '--sl-radius': t.borderRadius,
+      '--sl-card-padding': t.cardPadding,
+      '--sl-input-height': t.inputHeight,
+      '--sl-button-height': t.buttonHeight,
+      '--sl-font-family': t.fontFamily,
     };
   }
 
@@ -92,8 +94,26 @@ export class SaqlyLoginComponent {
     return this.loading || this.mergedConfig.disabled;
   }
 
-  get passwordPatternValue(): string  {
+  get passwordPatternValue(): string {
     return this.mergedConfig.passwordPattern || '';
+  }
+
+  get logoTemplateContext(): SaqlyLoginLogoTemplateContext {
+    return {
+      $implicit: this.mergedConfig,
+      config: this.mergedConfig,
+    };
+  }
+
+  get footerTemplateContext(): SaqlyLoginFooterTemplateContext {
+    return {
+      $implicit: this.mergedConfig,
+      config: this.mergedConfig,
+      register: (event?: Event) => this.onFooterRegister(event),
+      forgotPassword: (event?: Event) => this.onForgotPassword(event),
+      loading: this.loading,
+      disabled: this.isDisabled,
+    };
   }
 
   trackSocialButton(_: number, button: SaqlyLoginSocialButton): string {
@@ -105,14 +125,22 @@ export class SaqlyLoginComponent {
     this.isPasswordVisible = !this.isPasswordVisible;
   }
 
-  onForgotPassword(event: Event): void {
-    event.preventDefault();
+  onForgotPassword(event?: Event): void {
+    event?.preventDefault();
+    if (this.isDisabled) return;
     this.forgotPassword.emit();
   }
 
-  onRegister(event: Event): void {
-    event.preventDefault();
+  onRegister(event?: Event): void {
+    event?.preventDefault();
+    if (this.isDisabled) return;
     this.register.emit({ source: 'link' });
+  }
+
+  onFooterRegister(event?: Event): void {
+    event?.preventDefault();
+    if (this.isDisabled) return;
+    this.register.emit({ source: 'footer' });
   }
 
   onSocialLogin(providerId: string): void {

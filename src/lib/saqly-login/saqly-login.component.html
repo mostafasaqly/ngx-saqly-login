@@ -9,7 +9,10 @@
     <div class="saqly-login__header">
       @if (config.logoTemplate || mergedConfig.logoTemplate) {
         <ng-container
-          *ngTemplateOutlet="config.logoTemplate || mergedConfig.logoTemplate"
+          *ngTemplateOutlet="
+            config.logoTemplate || mergedConfig.logoTemplate;
+            context: logoTemplateContext
+          "
         ></ng-container>
       } @else if (mergedConfig.showBadge) {
         <div class="saqly-login__badge">{{ mergedConfig.badgeText }}</div>
@@ -38,7 +41,11 @@
       </div>
     }
 
-    <form class="saqly-login__form" #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+    <form
+      class="saqly-login__form"
+      #loginForm="ngForm"
+      (ngSubmit)="onSubmit(loginForm)"
+    >
       <div class="saqly-login__field">
         <label class="saqly-login__label" for="sl-email">
           {{ mergedConfig.emailLabel }}
@@ -173,7 +180,10 @@
     @if (config.footerTemplate || mergedConfig.footerTemplate) {
       <div class="saqly-login__footer">
         <ng-container
-          *ngTemplateOutlet="config.footerTemplate || mergedConfig.footerTemplate"
+          *ngTemplateOutlet="
+            config.footerTemplate || mergedConfig.footerTemplate;
+            context: footerTemplateContext
+          "
         ></ng-container>
       </div>
     }

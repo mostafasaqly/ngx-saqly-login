@@ -51,6 +51,73 @@ export interface SaqlyLoginThemeOptions {
   fontFamily?: string;
 }
 
+export interface SaqlyLoginResolvedConfig {
+  title: string;
+  subtitle: string;
+  buttonText: string;
+  loadingText: string;
+
+  mode: 'dark' | 'light';
+  direction: SaqlyLoginDirection;
+
+  showBackground: boolean;
+  showBadge: boolean;
+  showRememberMe: boolean;
+  showForgotPassword: boolean;
+  showRegister: boolean;
+  showPasswordToggle: boolean;
+  showSocialLogin: boolean;
+
+  cardMaxWidth: string;
+
+  emailLabel: string;
+  passwordLabel: string;
+  emailPlaceholder: string;
+  passwordPlaceholder: string;
+
+  rememberMeText: string;
+  forgotPasswordText: string;
+  forgotPasswordLink: string;
+
+  registerText: string;
+  registerLink: string;
+
+  badgeText: string;
+
+  passwordMinLength: number;
+  passwordMaxLength: number;
+  passwordPattern: string;
+
+  emailAutocomplete: string;
+  passwordAutocomplete: string;
+  autoFocusEmail: boolean;
+  disabled: boolean;
+  enableAnimations: boolean;
+
+  socialButtons: SaqlyLoginSocialButton[];
+
+  colors: SaqlyLoginColors;
+  theme: Required<SaqlyLoginThemeOptions>;
+  validationMessages: Required<SaqlyLoginValidationMessages>;
+
+  logoTemplate?: TemplateRef<SaqlyLoginLogoTemplateContext>;
+  footerTemplate?: TemplateRef<SaqlyLoginFooterTemplateContext>;
+}
+
+export interface SaqlyLoginLogoTemplateContext {
+  $implicit: SaqlyLoginResolvedConfig;
+  config: SaqlyLoginResolvedConfig;
+}
+
+export interface SaqlyLoginFooterTemplateContext {
+  $implicit: SaqlyLoginResolvedConfig;
+  config: SaqlyLoginResolvedConfig;
+  register: (event?: Event) => void;
+  forgotPassword: (event?: Event) => void;
+  loading: boolean;
+  disabled: boolean;
+}
+
 export interface SaqlyLoginConfig {
   title?: string;
   subtitle?: string;
@@ -100,8 +167,8 @@ export interface SaqlyLoginConfig {
   theme?: SaqlyLoginThemeOptions;
   validationMessages?: SaqlyLoginValidationMessages;
 
-  logoTemplate?: TemplateRef<unknown>;
-  footerTemplate?: TemplateRef<unknown>;
+  logoTemplate?: TemplateRef<SaqlyLoginLogoTemplateContext>;
+  footerTemplate?: TemplateRef<SaqlyLoginFooterTemplateContext>;
 }
 
 export interface SaqlyLoginSubmitEvent {
