@@ -1,0 +1,181 @@
+<div
+  class="saqly-login"
+  [class.saqly-login--with-background]="mergedConfig.showBackground"
+  [class.saqly-login--animated]="mergedConfig.enableAnimations"
+  [attr.dir]="mergedConfig.direction"
+  [ngStyle]="hostStyles"
+>
+  <div class="saqly-login__card">
+    <div class="saqly-login__header">
+      @if (config.logoTemplate || mergedConfig.logoTemplate) {
+        <ng-container
+          *ngTemplateOutlet="config.logoTemplate || mergedConfig.logoTemplate"
+        ></ng-container>
+      } @else if (mergedConfig.showBadge) {
+        <div class="saqly-login__badge">{{ mergedConfig.badgeText }}</div>
+      }
+
+      <h2 class="saqly-login__title">{{ mergedConfig.title }}</h2>
+      <p class="saqly-login__subtitle">{{ mergedConfig.subtitle }}</p>
+    </div>
+
+    @if (mergedConfig.showSocialLogin && mergedConfig.socialButtons.length) {
+      <div class="saqly-login__social">
+        @for (button of mergedConfig.socialButtons; track trackSocialButton($index, button)) {
+          <button
+            type="button"
+            class="saqly-login__social-btn"
+            [disabled]="isDisabled"
+            (click)="onSocialLogin(button.id)"
+          >
+            {{ button.label }}
+          </button>
+        }
+      </div>
+
+      <div class="saqly-login__divider">
+        <span>or continue with email</span>
+      </div>
+    }
+
+    <form class="saqly-login__form" #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+      <div class="saqly-login__field">
+        <label class="saqly-login__label" for="sl-email">
+          {{ mergedConfig.emailLabel }}
+        </label>
+
+        <input
+          id="sl-email"
+          class="saqly-login__input"
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          [placeholder]="mergedConfig.emailPlaceholder"
+          [autocomplete]="mergedConfig.emailAutocomplete"
+          [autofocus]="mergedConfig.autoFocusEmail"
+          [disabled]="isDisabled"
+          required
+          email
+          #emailModel="ngModel"
+        />
+
+        @if (emailModel.invalid && (emailModel.touched || loginForm.submitted)) {
+          <small class="saqly-login__error">
+            {{
+              emailModel.errors?.['required']
+                ? mergedConfig.validationMessages.emailRequired
+                : mergedConfig.validationMessages.emailInvalid
+            }}
+          </small>
+        }
+      </div>
+
+      <div class="saqly-login__field saqly-login__password-wrapper">
+        <label class="saqly-login__label" for="sl-password">
+          {{ mergedConfig.passwordLabel }}
+        </label>
+
+        <input
+          id="sl-password"
+          class="saqly-login__input saqly-login__input--password"
+          [type]="isPasswordVisible ? 'text' : 'password'"
+          [(ngModel)]="password"
+          name="password"
+          [placeholder]="mergedConfig.passwordPlaceholder"
+          [autocomplete]="mergedConfig.passwordAutocomplete"
+          [disabled]="isDisabled"
+          required
+          [minlength]="mergedConfig.passwordMinLength"
+          [maxlength]="mergedConfig.passwordMaxLength"
+          [pattern]="passwordPatternValue"
+          #passwordModel="ngModel"
+        />
+
+        @if (mergedConfig.showPasswordToggle) {
+          <button
+            type="button"
+            class="saqly-login__toggle"
+            [disabled]="isDisabled"
+            [attr.aria-label]="isPasswordVisible ? 'Hide password' : 'Show password'"
+            (click)="togglePasswordVisibility()"
+          >
+            {{ isPasswordVisible ? 'Hide' : 'Show' }}
+          </button>
+        }
+
+        @if (passwordModel.invalid && (passwordModel.touched || loginForm.submitted)) {
+          <small class="saqly-login__error">
+            {{
+              passwordModel.errors?.['required']
+                ? mergedConfig.validationMessages.passwordRequired
+                : passwordModel.errors?.['minlength']
+                  ? mergedConfig.validationMessages.passwordMinLength
+                  : passwordModel.errors?.['maxlength']
+                    ? mergedConfig.validationMessages.passwordMaxLength
+                    : mergedConfig.validationMessages.passwordPattern
+            }}
+          </small>
+        }
+      </div>
+
+      @if (
+        mergedConfig.showRememberMe ||
+        mergedConfig.showForgotPassword ||
+        mergedConfig.showRegister
+      ) {
+        <div class="saqly-login__options">
+          @if (mergedConfig.showRememberMe) {
+            <label class="saqly-login__remember">
+              <input
+                type="checkbox"
+                [(ngModel)]="rememberMe"
+                name="rememberMe"
+                [disabled]="isDisabled"
+              />
+              <span>{{ mergedConfig.rememberMeText }}</span>
+            </label>
+          }
+
+          <div class="saqly-login__links">
+            @if (mergedConfig.showForgotPassword) {
+              <a
+                [href]="mergedConfig.forgotPasswordLink"
+                class="saqly-login__forgot"
+                (click)="onForgotPassword($event)"
+              >
+                {{ mergedConfig.forgotPasswordText }}
+              </a>
+            }
+
+            @if (mergedConfig.showRegister) {
+              <a
+                [href]="mergedConfig.registerLink"
+                class="saqly-login__register"
+                (click)="onRegister($event)"
+              >
+                {{ mergedConfig.registerText }}
+              </a>
+            }
+          </div>
+        </div>
+      }
+
+      <button class="saqly-login__submit" type="submit" [disabled]="isDisabled">
+        @if (loading) {
+          <span class="saqly-login__spinner"></span>
+          <span>{{ mergedConfig.loadingText }}</span>
+        } @else {
+          <span>{{ mergedConfig.buttonText }}</span>
+        }
+      </button>
+    </form>
+
+    @if (config.footerTemplate || mergedConfig.footerTemplate) {
+      <div class="saqly-login__footer">
+        <ng-container
+          *ngTemplateOutlet="config.footerTemplate || mergedConfig.footerTemplate"
+        ></ng-container>
+      </div>
+    }
+  </div>
+</div>

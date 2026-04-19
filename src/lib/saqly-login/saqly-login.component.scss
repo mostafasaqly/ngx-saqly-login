@@ -1,0 +1,337 @@
+:host {
+  display: block;
+  width: 100%;
+  font-family: var(--sl-font-family, Inter, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif);
+
+  --sl-primary: #6366f1;
+  --sl-secondary: #8b5cf6;
+  --sl-bg: linear-gradient(135deg, #0f172a 0%, #111827 50%, #0b1120 100%);
+  --sl-bg-accent-start: rgba(99, 102, 241, 0.25);
+  --sl-bg-accent-end: rgba(168, 85, 247, 0.2);
+  --sl-card-bg: rgba(15, 23, 42, 0.82);
+  --sl-card-border: rgba(255, 255, 255, 0.08);
+  --sl-text-primary: #f8fafc;
+  --sl-text-secondary: #cbd5e1;
+  --sl-text-muted: #94a3b8;
+  --sl-input-bg: rgba(15, 23, 42, 0.75);
+  --sl-input-border: rgba(148, 163, 184, 0.2);
+  --sl-input-placeholder: #64748b;
+  --sl-focus-ring: rgba(99, 102, 241, 0.25);
+  --sl-button-text: #ffffff;
+  --sl-link: #a5b4fc;
+  --sl-link-hover: #c7d2fe;
+  --sl-badge-bg: rgba(99, 102, 241, 0.12);
+  --sl-badge-border: rgba(129, 140, 248, 0.28);
+  --sl-badge-text: #c7d2fe;
+  --sl-shadow: 0 25px 50px rgba(0, 0, 0, 0.35), 0 10px 25px rgba(99, 102, 241, 0.15);
+  --sl-error: #f87171;
+  --sl-checkbox: #6366f1;
+  --sl-card-max-width: 420px;
+  --sl-radius: 24px;
+  --sl-card-padding: 2rem;
+  --sl-input-height: 52px;
+  --sl-button-height: 52px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.saqly-login {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  color: var(--sl-text-primary);
+}
+
+.saqly-login--with-background {
+  background:
+    radial-gradient(circle at top left, var(--sl-bg-accent-start), transparent 35%),
+    radial-gradient(circle at bottom right, var(--sl-bg-accent-end), transparent 35%),
+    var(--sl-bg);
+}
+
+.saqly-login--animated .saqly-login__card {
+  animation: saqly-fade-up 0.35s ease;
+}
+
+.saqly-login__card {
+  width: 100%;
+  max-width: var(--sl-card-max-width);
+  padding: var(--sl-card-padding);
+  border-radius: var(--sl-radius);
+  border: 1px solid var(--sl-card-border);
+  background: var(--sl-card-bg);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--sl-shadow);
+}
+
+.saqly-login__header {
+  margin-bottom: 1.5rem;
+}
+
+.saqly-login__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--sl-badge-border);
+  background: var(--sl-badge-bg);
+  color: var(--sl-badge-text);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.saqly-login__title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.8rem, 3vw, 2.25rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--sl-text-primary);
+}
+
+.saqly-login__subtitle {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--sl-text-muted);
+}
+
+.saqly-login__social {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.saqly-login__social-btn {
+  min-height: 46px;
+  border-radius: 14px;
+  border: 1px solid var(--sl-input-border);
+  background: var(--sl-input-bg);
+  color: var(--sl-text-primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.saqly-login__divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.25rem 0 1rem;
+  color: var(--sl-text-muted);
+  font-size: 0.88rem;
+}
+
+.saqly-login__divider::before,
+.saqly-login__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--sl-card-border);
+}
+
+.saqly-login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.saqly-login__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.saqly-login__label {
+  color: var(--sl-text-secondary);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.saqly-login__input {
+  width: 100%;
+  min-height: var(--sl-input-height);
+  padding: 0 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--sl-input-border);
+  background: var(--sl-input-bg);
+  color: var(--sl-text-primary);
+  outline: none;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.saqly-login__input::placeholder {
+  color: var(--sl-input-placeholder);
+}
+
+.saqly-login__input:focus {
+  border-color: var(--sl-primary);
+  box-shadow: 0 0 0 4px var(--sl-focus-ring);
+}
+
+.saqly-login__password-wrapper {
+  position: relative;
+}
+
+.saqly-login__input--password {
+  padding-inline-end: 5rem;
+}
+
+.saqly-login__toggle {
+  position: absolute;
+  top: 2.35rem;
+  inset-inline-end: 0.75rem;
+  border: none;
+  background: transparent;
+  color: var(--sl-link);
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.saqly-login__toggle:hover {
+  color: var(--sl-link-hover);
+}
+
+.saqly-login__options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.saqly-login__remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--sl-text-secondary);
+  font-size: 0.92rem;
+}
+
+.saqly-login__remember input {
+  accent-color: var(--sl-checkbox);
+}
+
+.saqly-login__links {
+  display: inline-flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.saqly-login__forgot,
+.saqly-login__register {
+  color: var(--sl-link);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.saqly-login__forgot:hover,
+.saqly-login__register:hover {
+  color: var(--sl-link-hover);
+  text-decoration: underline;
+}
+
+.saqly-login__submit {
+  margin-top: 0.35rem;
+  min-height: var(--sl-button-height);
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--sl-primary), var(--sl-secondary));
+  color: var(--sl-button-text);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease,
+    box-shadow 0.25s ease;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+}
+
+.saqly-login__submit:hover:not(:disabled),
+.saqly-login__social-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.saqly-login__submit:disabled,
+.saqly-login__social-btn:disabled,
+.saqly-login__toggle:disabled,
+.saqly-login__input:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+.saqly-login__spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.34);
+  border-top-color: #fff;
+  animation: saqly-spin 0.75s linear infinite;
+}
+
+.saqly-login__error {
+  color: var(--sl-error);
+  font-size: 0.82rem;
+}
+
+.saqly-login__footer {
+  margin-top: 1.25rem;
+}
+
+@keyframes saqly-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes saqly-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 576px) {
+  .saqly-login {
+    padding: 1rem;
+  }
+
+  .saqly-login__card {
+    padding: 1.25rem;
+    border-radius: 20px;
+  }
+
+  .saqly-login__title {
+    font-size: 1.65rem;
+  }
+
+  .saqly-login__options {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .saqly-login__links {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
