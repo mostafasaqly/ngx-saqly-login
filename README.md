@@ -61,7 +61,7 @@ import { SaqlyLoginComponent, SaqlyLoginSubmitEvent } from 'ngx-saqly-login';
     />
   `,
 })
-export class AppComponent {
+export class App {
   loading = false;
 
   onLogin(event: SaqlyLoginSubmitEvent): void {
@@ -385,7 +385,7 @@ import { SaqlyLoginComponent, SaqlyLoginConfig, SaqlyLoginSubmitEvent, SaqlyLogi
   imports: [SaqlyLoginComponent],
   templateUrl: './app.html',
 })
-export class AppComponent implements AfterViewInit {
+export class App implements AfterViewInit {
   @ViewChild('logoTpl', { static: true }) logoTpl!: TemplateRef<any>;
   @ViewChild('footerTpl', { static: true }) footerTpl!: TemplateRef<any>;
 
