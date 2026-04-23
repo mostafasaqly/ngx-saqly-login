@@ -1,21 +1,28 @@
 # ngx-saqly-login
 
-A configurable Angular standalone login UI package for building polished authentication screens faster.
+A configurable Angular standalone login UI component for building polished authentication screens faster.
 
 ---
 
-## Features
+## Table of Contents
 
-- Standalone-first Angular component
-- Optional NgModule support
-- Config-driven API
-- Full theme customization
-- Dark / Light / Auto mode
-- Validation messages
-- Social login support
-- Logo / Footer templates
-- RTL support
-- Global defaults via forRoot()
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Component API](#component-api)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
+- [Configuration Reference](#configuration-reference)
+  - [SaqlyLoginConfig](#saqlyloginconfig)
+  - [Colors](#colors-saqlylogincolors)
+  - [Theme](#theme-saqlyloginthemeoptions)
+  - [Validation Messages](#validation-messages-saqlyloginvalidationmessages)
+  - [Social Buttons](#social-buttons-saqlyloginsocialbutton)
+- [Global Defaults with forRoot()](#global-defaults-with-forroot)
+- [Custom Templates](#custom-templates)
+  - [Logo Template](#logo-template)
+  - [Footer Template](#footer-template)
+- [Full Example](#full-example)
+- [All Exported Symbols](#all-exported-symbols)
 
 ---
 
@@ -25,12 +32,341 @@ A configurable Angular standalone login UI package for building polished authent
 npm install ngx-saqly-login
 ```
 
----
-
-## Peer Dependencies
+**Peer dependencies** (already in most Angular projects):
 
 ```bash
 npm install @angular/core @angular/common @angular/forms
+```
+
+---
+
+## Quick Start
+
+The fastest way to get a login screen — zero config required:
+
+**app.ts**
+
+```ts
+import { Component } from '@angular/core';
+import { SaqlyLoginComponent, SaqlyLoginSubmitEvent } from 'ngx-saqly-login';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [SaqlyLoginComponent],
+  template: `
+    <ngx-saqly-login
+      [loading]="loading"
+      (login)="onLogin($event)"
+    />
+  `,
+})
+export class AppComponent {
+  loading = false;
+
+  onLogin(event: SaqlyLoginSubmitEvent): void {
+    this.loading = true;
+    // call your auth service here
+    console.log(event.email, event.password, event.rememberMe);
+  }
+}
+```
+
+That's it. The component works out of the box with sensible defaults.
+
+---
+
+## Component API
+
+### Inputs
+
+| Input     | Type                | Default | Description                                        |
+|-----------|---------------------|---------|----------------------------------------------------|
+| `config`  | `SaqlyLoginConfig`  | `{}`    | All visual and behavioral settings (all optional). |
+| `loading` | `boolean`           | `false` | Shows loading state and disables the form.         |
+
+### Outputs
+
+| Output          | Payload type                  | When emitted                              |
+|-----------------|-------------------------------|-------------------------------------------|
+| `login`         | `SaqlyLoginSubmitEvent`       | User submits the form successfully.       |
+| `forgotPassword`| `void`                        | User clicks the forgot-password link.     |
+| `register`      | `SaqlyLoginRegisterEvent`     | User clicks a register link or button.    |
+| `socialLogin`   | `string` (provider id)        | User clicks a social login button.        |
+
+**`SaqlyLoginSubmitEvent`**
+
+```ts
+{
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+```
+
+**`SaqlyLoginRegisterEvent`**
+
+```ts
+{ source: 'link' | 'footer' }
+```
+
+`source: 'link'` — inline register link inside the card.  
+`source: 'footer'` — register action called from a custom `footerTemplate`.
+
+---
+
+## Configuration Reference
+
+### SaqlyLoginConfig
+
+Every property is optional. Unset properties fall back to the library defaults shown below.
+
+#### Text & Labels
+
+| Property              | Type     | Default                                  | Description                        |
+|-----------------------|----------|------------------------------------------|------------------------------------|
+| `title?`              | `string` | `'Welcome back'`                         | Card heading.                      |
+| `subtitle?`           | `string` | `'Sign in to continue...'`               | Card sub-heading.                  |
+| `buttonText?`         | `string` | `'Login'`                                | Submit button label.               |
+| `loadingText?`        | `string` | `'Loading...'`                           | Submit button label while loading. |
+| `emailLabel?`         | `string` | `'Email'`                                | Email field label.                 |
+| `passwordLabel?`      | `string` | `'Password'`                             | Password field label.              |
+| `emailPlaceholder?`   | `string` | `'Email'`                                | Email field placeholder.           |
+| `passwordPlaceholder?`| `string` | `'Password'`                             | Password field placeholder.        |
+| `rememberMeText?`     | `string` | `'Remember me'`                          | Remember-me checkbox label.        |
+| `forgotPasswordText?` | `string` | `'Forgot Password?'`                     | Forgot-password link text.         |
+| `forgotPasswordLink?` | `string` | `'#'`                                    | Forgot-password `href`.            |
+| `registerText?`       | `string` | `'Create account'`                       | Register link text.                |
+| `registerLink?`       | `string` | `'#'`                                    | Register `href`.                   |
+| `badgeText?`          | `string` | `'ngx-saqly-login'`                      | Small badge text at card top.      |
+
+#### Appearance & Layout
+
+| Property            | Type                    | Default  | Description                                   |
+|---------------------|-------------------------|----------|-----------------------------------------------|
+| `mode?`             | `'dark' \| 'light' \| 'auto'` | `'dark'` | Color scheme. `'auto'` follows OS preference. |
+| `direction?`        | `'ltr' \| 'rtl'`        | `'ltr'`  | Text direction for RTL languages.             |
+| `cardMaxWidth?`     | `string`                | `'420px'`| Max width of the login card (any CSS value).  |
+| `showBackground?`   | `boolean`               | `true`   | Show the full-page gradient background.       |
+| `showBadge?`        | `boolean`               | `true`   | Show the badge at the top of the card.        |
+| `showRememberMe?`   | `boolean`               | `false`  | Show the remember-me checkbox.                |
+| `showForgotPassword?`| `boolean`              | `false`  | Show the forgot-password link.                |
+| `showRegister?`     | `boolean`               | `false`  | Show the inline register link.                |
+| `showPasswordToggle?`| `boolean`              | `true`   | Show the password visibility toggle icon.     |
+| `showSocialLogin?`  | `boolean`               | `false`  | Show the social login buttons section.        |
+
+#### Behavior
+
+| Property               | Type      | Default           | Description                                 |
+|------------------------|-----------|-------------------|---------------------------------------------|
+| `autoFocusEmail?`      | `boolean` | `false`           | Auto-focus the email field on mount.        |
+| `disabled?`            | `boolean` | `false`           | Disable the entire form.                    |
+| `enableAnimations?`    | `boolean` | `true`            | Enable CSS entrance animations.             |
+| `emailAutocomplete?`   | `string`  | `'email'`         | `autocomplete` attribute for email input.   |
+| `passwordAutocomplete?`| `string`  | `'current-password'` | `autocomplete` for password input.       |
+
+#### Validation
+
+| Property             | Type     | Default | Description                                   |
+|----------------------|----------|---------|-----------------------------------------------|
+| `passwordMinLength?` | `number` | `6`     | Minimum password length.                      |
+| `passwordMaxLength?` | `number` | `100`   | Maximum password length.                      |
+| `passwordPattern?`   | `string` | `''`    | Regex pattern for password validation.        |
+| `validationMessages?`| [`SaqlyLoginValidationMessages`](#validation-messages-saqlyloginvalidationmessages) | See below | Override individual error messages. |
+
+#### Templates
+
+| Property          | Type                             | Description                       |
+|-------------------|----------------------------------|-----------------------------------|
+| `logoTemplate?`   | `TemplateRef<SaqlyLoginLogoTemplateContext>`   | Custom logo area above the title. |
+| `footerTemplate?` | `TemplateRef<SaqlyLoginFooterTemplateContext>` | Custom content below the button.  |
+
+---
+
+### Colors (`SaqlyLoginColors`)
+
+Pass as `config.colors`. All fields are **optional** — only override what you need.
+
+| Property               | Description                                     |
+|------------------------|-------------------------------------------------|
+| `primary?`             | Primary accent (button background, focus rings).|
+| `secondary?`           | Secondary accent (gradients).                   |
+| `background?`          | Full-page background (supports CSS gradients).  |
+| `backgroundAccentStart?` | Floating orb start color.                    |
+| `backgroundAccentEnd?` | Floating orb end color.                         |
+| `cardBackground?`      | Card background color.                          |
+| `cardBorder?`          | Card border color.                              |
+| `textPrimary?`         | Main text color.                                |
+| `textSecondary?`       | Secondary text color.                           |
+| `textMuted?`           | Muted/hint text color.                          |
+| `inputBackground?`     | Input field background.                         |
+| `inputBorder?`         | Input field border.                             |
+| `inputPlaceholder?`    | Placeholder text color.                         |
+| `focusRing?`           | Input focus ring color.                         |
+| `buttonText?`          | Submit button text color.                       |
+| `link?`                | Link color.                                     |
+| `linkHover?`           | Link hover color.                               |
+| `badgeBackground?`     | Badge background.                               |
+| `badgeBorder?`         | Badge border.                                   |
+| `badgeText?`           | Badge text color.                               |
+| `shadow?`              | Card box-shadow.                                |
+| `error?`               | Validation error text color.                    |
+| `checkbox?`            | Checkbox accent color.                          |
+
+---
+
+### Theme (`SaqlyLoginThemeOptions`)
+
+Pass as `config.theme`. All fields are optional.
+
+| Property        | Default                    | Description                              |
+|-----------------|----------------------------|------------------------------------------|
+| `borderRadius?` | `'24px'`                   | Card and input border radius.            |
+| `cardPadding?`  | `'2rem'`                   | Card inner padding.                      |
+| `inputHeight?`  | `'52px'`                   | Height of input fields.                  |
+| `buttonHeight?` | `'52px'`                   | Height of the submit button.             |
+| `fontFamily?`   | `Inter, "Segoe UI", ...`   | Font stack applied to the component.     |
+
+---
+
+### Validation Messages (`SaqlyLoginValidationMessages`)
+
+Pass as `config.validationMessages`. All fields are optional.
+
+| Property           | Default                                  |
+|--------------------|------------------------------------------|
+| `emailRequired?`   | `'Email is required.'`                   |
+| `emailInvalid?`    | `'Please enter a valid email address.'`  |
+| `passwordRequired?`| `'Password is required.'`               |
+| `passwordMinLength?`| `'Password is too short.'`             |
+| `passwordMaxLength?`| `'Password is too long.'`              |
+| `passwordPattern?` | `'Password format is invalid.'`          |
+
+---
+
+### Social Buttons (`SaqlyLoginSocialButton[]`)
+
+Pass as `config.socialButtons`. Each item:
+
+```ts
+{ id: 'google' | 'github' | 'microsoft' | string; label: string }
+```
+
+Built-in icon support: `'google'`, `'github'`, `'microsoft'`. Any other `id` renders as a text-only button.
+
+```ts
+socialButtons: [
+  { id: 'google',    label: 'Continue with Google' },
+  { id: 'github',    label: 'Continue with GitHub' },
+  { id: 'microsoft', label: 'Continue with Microsoft' },
+]
+```
+
+Enable the section with `showSocialLogin: true`.
+
+---
+
+## Global Defaults with forRoot()
+
+Use `SaqlyLoginModule.forRoot()` to set defaults once for the entire app instead of repeating config on every component instance.
+
+**app.config.ts** (standalone bootstrap)
+
+```ts
+import { ApplicationConfig } from '@angular/core';
+import { SaqlyLoginModule } from 'ngx-saqly-login';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    SaqlyLoginModule.forRoot({
+      mode: 'dark',
+      showRememberMe: true,
+      colors: { primary: '#6366f1' },
+    }).providers!,
+  ],
+};
+```
+
+**app.module.ts** (NgModule bootstrap)
+
+```ts
+import { NgModule } from '@angular/core';
+import { SaqlyLoginModule } from 'ngx-saqly-login';
+
+@NgModule({
+  imports: [
+    SaqlyLoginModule.forRoot({
+      mode: 'dark',
+      showRememberMe: true,
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+Per-instance `[config]` is deep-merged on top of the global config, so local overrides always win.
+
+---
+
+## Custom Templates
+
+### Logo Template
+
+Rendered above the card title. The template receives the resolved config as context.
+
+```html
+<ng-template #logoTpl let-cfg="config">
+  <img src="/logo.svg" alt="My App" style="height: 40px; margin-bottom: 1rem;" />
+</ng-template>
+
+<ngx-saqly-login [config]="config" />
+```
+
+```ts
+@ViewChild('logoTpl', { static: true }) logoTpl!: TemplateRef<any>;
+
+ngAfterViewInit() {
+  this.config = { ...this.config, logoTemplate: this.logoTpl };
+}
+```
+
+**Logo template context (`SaqlyLoginLogoTemplateContext`):**
+
+```ts
+{
+  $implicit: SaqlyLoginResolvedConfig; // same as config
+  config: SaqlyLoginResolvedConfig;
+}
+```
+
+---
+
+### Footer Template
+
+Rendered below the submit button. Receives helpers to trigger register/forgotPassword programmatically.
+
+```html
+<ng-template #footerTpl let-register="register" let-disabled="disabled">
+  <p style="text-align:center; font-size:0.9rem;">
+    Don't have an account?
+    <a href="#" (click)="register($event)" [style.opacity]="disabled ? 0.5 : 1">
+      Sign up
+    </a>
+  </p>
+</ng-template>
+```
+
+**Footer template context (`SaqlyLoginFooterTemplateContext`):**
+
+```ts
+{
+  $implicit: SaqlyLoginResolvedConfig;
+  config: SaqlyLoginResolvedConfig;
+  register: (event?: Event) => void;       // emits register output with source:'footer'
+  forgotPassword: (event?: Event) => void; // emits forgotPassword output
+  loading: boolean;
+  disabled: boolean;
+}
 ```
 
 ---
@@ -40,18 +376,8 @@ npm install @angular/core @angular/common @angular/forms
 ### app.ts
 
 ```ts
-
-import {
-  AfterViewInit,
-  Component,
-  signal,
-  TemplateRef,
-  ViewChild,
-} from '@angular/core';
-import {
-  SaqlyLoginComponent,
-  SaqlyLoginConfig,
-} from 'ngx-saqly-login';
+import { AfterViewInit, Component, signal, TemplateRef, ViewChild } from '@angular/core';
+import { SaqlyLoginComponent, SaqlyLoginConfig, SaqlyLoginSubmitEvent, SaqlyLoginRegisterEvent } from 'ngx-saqly-login';
 
 @Component({
   selector: 'app-root',
@@ -59,12 +385,9 @@ import {
   imports: [SaqlyLoginComponent],
   templateUrl: './app.html',
 })
-export class App implements AfterViewInit {
-  @ViewChild('logoTpl', { static: true })
-  logoTpl!: TemplateRef<any>;
-
-  @ViewChild('footerTpl', { static: true })
-  footerTpl!: TemplateRef<any>;
+export class AppComponent implements AfterViewInit {
+  @ViewChild('logoTpl', { static: true }) logoTpl!: TemplateRef<any>;
+  @ViewChild('footerTpl', { static: true }) footerTpl!: TemplateRef<any>;
 
   loading = signal(false);
 
@@ -86,34 +409,29 @@ export class App implements AfterViewInit {
     showSocialLogin: true,
 
     cardMaxWidth: '460px',
-
-    badgeText: 'TEST AUTH',
+    badgeText: 'MY APP',
 
     emailLabel: 'Work Email',
     passwordLabel: 'Password',
-    emailPlaceholder: 'Enter your work email',
+    emailPlaceholder: 'you@company.com',
     passwordPlaceholder: 'Enter your password',
 
     rememberMeText: 'Keep me signed in',
     forgotPasswordText: 'Forgot your password?',
-    forgotPasswordLink: '#',
+    forgotPasswordLink: '/forgot-password',
     registerText: 'Create account',
-    registerLink: '#',
+    registerLink: '/register',
 
-    passwordMinLength: 6,
-    passwordMaxLength: 30,
+    passwordMinLength: 8,
+    passwordMaxLength: 64,
     passwordPattern: '^(?=.*[A-Z])(?=.*[0-9]).+$',
 
-    emailAutocomplete: 'email',
-    passwordAutocomplete: 'current-password',
-
     autoFocusEmail: true,
-    disabled: false,
     enableAnimations: true,
 
     socialButtons: [
-      { id: 'google', label: 'Continue with Google' },
-      { id: 'github', label: 'Continue with GitHub' },
+      { id: 'google',    label: 'Continue with Google' },
+      { id: 'github',    label: 'Continue with GitHub' },
       { id: 'microsoft', label: 'Continue with Microsoft' },
     ],
 
@@ -121,43 +439,20 @@ export class App implements AfterViewInit {
       emailRequired: 'Email is required',
       emailInvalid: 'Please enter a valid email address',
       passwordRequired: 'Password is required',
-      passwordMinLength: 'Password must be at least 6 characters',
-      passwordMaxLength: 'Password must not exceed 30 characters',
-      passwordPattern: 'Password must contain at least one uppercase letter and one number',
+      passwordMinLength: 'Password must be at least 8 characters',
+      passwordMaxLength: 'Password must not exceed 64 characters',
+      passwordPattern: 'Must contain at least one uppercase letter and one number',
     },
 
     colors: {
       primary: '#06b6d4',
       secondary: '#8b5cf6',
-      background: 'linear-gradient(135deg, #0f172a 0%, #111827 50%, #020617 100%)',
-      backgroundAccentStart: 'rgba(6, 182, 212, 0.20)',
-      backgroundAccentEnd: 'rgba(139, 92, 246, 0.22)',
-      cardBackground: 'rgba(15, 23, 42, 0.86)',
-      cardBorder: 'rgba(255, 255, 255, 0.08)',
-      textPrimary: '#f8fafc',
-      textSecondary: '#cbd5e1',
-      textMuted: '#94a3b8',
-      inputBackground: 'rgba(15, 23, 42, 0.78)',
-      inputBorder: 'rgba(148, 163, 184, 0.20)',
-      inputPlaceholder: '#64748b',
-      focusRing: 'rgba(6, 182, 212, 0.22)',
-      buttonText: '#ffffff',
-      link: '#22d3ee',
-      linkHover: '#67e8f9',
-      badgeBackground: 'rgba(6, 182, 212, 0.14)',
-      badgeBorder: 'rgba(34, 211, 238, 0.24)',
-      badgeText: '#cffafe',
-      shadow: '0 25px 50px rgba(0, 0, 0, 0.35), 0 10px 25px rgba(6, 182, 212, 0.12)',
-      error: '#f87171',
-      checkbox: '#06b6d4',
     },
 
     theme: {
-      borderRadius: '24px',
-      cardPadding: '2rem',
+      borderRadius: '16px',
       inputHeight: '52px',
       buttonHeight: '52px',
-      fontFamily: 'Inter, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
     },
   };
 
@@ -169,108 +464,102 @@ export class App implements AfterViewInit {
     };
   }
 
-handleLogin(event: {
-  email: string;
-  password: string;
-  rememberMe: boolean;
-}): void {
-  console.log('login event', event);
-
-  this.loading.set(true);
-
-  setTimeout(() => {
-    this.loading.set(false);
-    console.log('login finished');
-  }, 1500);
-}
-
-  handleForgotPassword(): void {
-    console.log('forgot password clicked');
-    alert('Forgot password clicked');
+  onLogin(event: SaqlyLoginSubmitEvent): void {
+    this.loading.set(true);
+    // call your auth service
+    console.log('Login:', event.email, '| rememberMe:', event.rememberMe);
+    setTimeout(() => this.loading.set(false), 1500);
   }
 
-  handleRegister(event: { source: 'link' | 'footer' }): void {
-    console.log('register clicked', event);
-    alert(`Register clicked from: ${event.source}`);
+  onForgotPassword(): void {
+    console.log('Forgot password clicked');
   }
 
-  handleSocialLogin(providerId: string): void {
-    console.log('social login', providerId);
-    alert(`Social login with: ${providerId}`);
+  onRegister(event: SaqlyLoginRegisterEvent): void {
+    console.log('Register clicked from:', event.source);
+  }
+
+  onSocialLogin(providerId: string): void {
+    console.log('Social login:', providerId);
   }
 }
-
 ```
-
----
 
 ### app.html
 
 ```html
 <ng-template #logoTpl>
-  <div
-    style="
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      font-weight: 800;
-      font-size: 1rem;
-      color: #cffafe;
-    "
-  >
-    <span
-      style="
-        width: 12px;
-        height: 12px;
-        border-radius: 999px;
-        background: linear-gradient(135deg, #06b6d4, #8b5cf6);
-        display: inline-block;
-      "
-    ></span>
-    TEST AUTH
+  <div style="display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:1rem; font-weight:800; color:#cffafe;">
+    <span style="width:12px; height:12px; border-radius:999px; background:linear-gradient(135deg,#06b6d4,#8b5cf6); display:inline-block;"></span>
+    MY APP
   </div>
 </ng-template>
 
 <ng-template #footerTpl let-register="register" let-disabled="disabled">
-  <div
-    style="
-      font-size: 0.9rem;
-      color: #94a3b8;
-      text-align: center;
-    "
-  >
-    Don’t have an account?
-    <a
-      href="#"
-      (click)="register($event)"
-      [style.pointer-events]="disabled ? 'none' : 'auto'"
-      [style.opacity]="disabled ? '0.7' : '1'"
-      style="
-        color: #22d3ee;
-        text-decoration: none;
-        font-weight: 600;
-        margin-left: 0.35rem;
-      "
-    >
+  <p style="font-size:0.9rem; color:#94a3b8; text-align:center;">
+    Don't have an account?
+    <a href="#" (click)="register($event)"
+       [style.pointer-events]="disabled ? 'none' : 'auto'"
+       [style.opacity]="disabled ? '0.6' : '1'"
+       style="color:#22d3ee; font-weight:600; margin-left:0.3rem; text-decoration:none;">
       Create one
     </a>
-  </div>
+  </p>
 </ng-template>
 
 <ngx-saqly-login
   [config]="config"
   [loading]="loading()"
-  (login)="handleLogin($event)"
-  (forgotPassword)="handleForgotPassword()"
-  (register)="handleRegister($event)"
-  (socialLogin)="handleSocialLogin($event)"
->
-</ngx-saqly-login>
-
+  (login)="onLogin($event)"
+  (forgotPassword)="onForgotPassword()"
+  (register)="onRegister($event)"
+  (socialLogin)="onSocialLogin($event)"
+/>
 ```
+
+---
+
+## All Exported Symbols
+
+```ts
+// Component
+SaqlyLoginComponent
+
+// Module (NgModule users)
+SaqlyLoginModule
+
+// Types
+SaqlyLoginConfig
+SaqlyLoginResolvedConfig
+SaqlyLoginGlobalConfig
+SaqlyLoginColors
+SaqlyLoginThemeOptions
+SaqlyLoginValidationMessages
+SaqlyLoginSocialButton
+SaqlyLoginThemeMode        // 'dark' | 'light' | 'auto'
+SaqlyLoginDirection        // 'ltr' | 'rtl'
+SaqlyLoginSubmitEvent
+SaqlyLoginRegisterEvent
+SaqlyLoginLogoTemplateContext
+SaqlyLoginFooterTemplateContext
+
+// Token (for advanced DI)
+SAQLY_LOGIN_GLOBAL_CONFIG
+
+// Defaults (for extending)
+SAQLY_LOGIN_DEFAULT_CONFIG
+SAQLY_LOGIN_DARK_COLORS
+SAQLY_LOGIN_LIGHT_COLORS
+SAQLY_LOGIN_DEFAULT_THEME
+SAQLY_LOGIN_DEFAULT_VALIDATION_MESSAGES
+SAQLY_LOGIN_DEFAULT_SOCIAL_BUTTONS
+
+// Utilities
+mergeSaqlyLoginConfig
+```
+
+---
 
 ## License
 
 MIT
-
