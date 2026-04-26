@@ -1,10 +1,11 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Inject,
   Input,
+  OnInit,
   Optional,
   Output,
 } from '@angular/core';
@@ -21,6 +22,8 @@ import {
   SaqlyLoginSubmitEvent,
 } from '../types/saqly-login.types';
 
+const GLOBAL_STYLE_ID = 'ngx-saqly-login-reset';
+
 @Component({
   selector: 'ngx-saqly-login',
   standalone: true,
@@ -29,7 +32,7 @@ import {
   styleUrl: './saqly-login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SaqlyLoginComponent {
+export class SaqlyLoginComponent implements OnInit {
   @Input() config: SaqlyLoginConfig = {};
   @Input() loading = false;
 
@@ -46,8 +49,18 @@ export class SaqlyLoginComponent {
   constructor(
     @Optional()
     @Inject(SAQLY_LOGIN_GLOBAL_CONFIG)
-    private readonly globalConfig: SaqlyLoginConfig | null
+    private readonly globalConfig: SaqlyLoginConfig | null,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {}
+
+  ngOnInit(): void {
+    if (!this.document.getElementById(GLOBAL_STYLE_ID)) {
+      const style = this.document.createElement('style');
+      style.id = GLOBAL_STYLE_ID;
+      style.textContent = 'body{margin:0;padding:0;box-sizing:border-box}';
+      this.document.head.appendChild(style);
+    }
+  }
 
   get mergedConfig(): SaqlyLoginResolvedConfig {
     return mergeSaqlyLoginConfig(this.config, this.globalConfig ?? {});

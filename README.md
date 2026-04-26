@@ -13,6 +13,7 @@ A configurable Angular standalone login UI component for building polished authe
   - [Outputs](#outputs)
 - [Configuration Reference](#configuration-reference)
   - [SaqlyLoginConfig](#saqlyloginconfig)
+  - [Dark & Light Themes](#dark--light-themes)
   - [Colors](#colors-saqlylogincolors)
   - [Theme](#theme-saqlyloginthemeoptions)
   - [Validation Messages](#validation-messages-saqlyloginvalidationmessages)
@@ -37,6 +38,8 @@ npm install ngx-saqly-login
 ```bash
 npm install @angular/core @angular/common @angular/forms
 ```
+
+> **No extra setup required.** The component automatically resets `body { margin: 0; padding: 0 }` so the full-page background fills the viewport correctly — you don't need to add anything to your `styles.scss`.
 
 ---
 
@@ -183,9 +186,63 @@ Every property is optional. Unset properties fall back to the library defaults s
 
 ---
 
+## Dark & Light Themes
+
+Setting `mode` automatically applies a **complete color palette** — no manual color configuration needed.
+
+| `mode`    | Behavior                                            |
+|-----------|-----------------------------------------------------|
+| `'dark'`  | Deep navy/slate background, indigo/violet accents.  |
+| `'light'` | Soft white/lavender background, indigo accents.     |
+| `'auto'`  | Follows the OS `prefers-color-scheme` setting.      |
+
+### Switch to light mode
+
+```ts
+config: SaqlyLoginConfig = {
+  mode: 'light',
+};
+```
+
+The entire palette (background, card, inputs, buttons, links, badges, errors…) switches automatically.
+
+### Override individual colors
+
+You can override any specific color on top of the theme defaults. Only the colors you specify change — the rest stay at their theme values:
+
+```ts
+config: SaqlyLoginConfig = {
+  mode: 'light',
+  colors: {
+    primary: '#0ea5e9',    // override button & focus color only
+    secondary: '#6366f1',  // override gradient end only
+  },
+};
+```
+
+```ts
+config: SaqlyLoginConfig = {
+  mode: 'dark',
+  colors: {
+    primary: '#f59e0b',
+    cardBackground: 'rgba(30, 10, 10, 0.85)',
+  },
+};
+```
+
+### Follow OS preference automatically
+
+```ts
+config: SaqlyLoginConfig = {
+  mode: 'auto', // dark on dark-OS, light on light-OS
+};
+```
+
+---
+
 ### Colors (`SaqlyLoginColors`)
 
-Pass as `config.colors`. All fields are **optional** — only override what you need.
+Pass as `config.colors`. All fields are **optional** — only override what you need on top of the active theme palette.
 
 | Property               | Description                                     |
 |------------------------|-------------------------------------------------|
@@ -212,6 +269,8 @@ Pass as `config.colors`. All fields are **optional** — only override what you 
 | `shadow?`              | Card box-shadow.                                |
 | `error?`               | Validation error text color.                    |
 | `checkbox?`            | Checkbox accent color.                          |
+
+**Dark theme defaults (`SAQLY_LOGIN_DARK_COLORS`)** and **light theme defaults (`SAQLY_LOGIN_LIGHT_COLORS`)** are exported from the library so you can inspect or extend them programmatically.
 
 ---
 
@@ -279,9 +338,9 @@ import { SaqlyLoginModule } from 'ngx-saqly-login';
 export const appConfig: ApplicationConfig = {
   providers: [
     SaqlyLoginModule.forRoot({
-      mode: 'dark',
+      mode: 'light',         // all instances default to light theme
       showRememberMe: true,
-      colors: { primary: '#6366f1' },
+      colors: { primary: '#0ea5e9' }, // override one color across all instances
     }).providers!,
   ],
 };
@@ -397,6 +456,7 @@ export class App implements AfterViewInit {
     buttonText: 'Sign In',
     loadingText: 'Signing in...',
 
+    // Switch to 'light' or 'auto' to change the full color palette automatically
     mode: 'dark',
     direction: 'ltr',
 
@@ -444,6 +504,7 @@ export class App implements AfterViewInit {
       passwordPattern: 'Must contain at least one uppercase letter and one number',
     },
 
+    // Optional: override specific colors on top of the theme palette
     colors: {
       primary: '#06b6d4',
       secondary: '#8b5cf6',
