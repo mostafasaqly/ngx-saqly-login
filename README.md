@@ -45,37 +45,38 @@ npm install @angular/core @angular/common @angular/forms
 
 ## Quick Start
 
-The fastest way to get a login screen — zero config required:
-
 **app.ts**
 
 ```ts
 import { Component } from '@angular/core';
-import { SaqlyLoginComponent, SaqlyLoginSubmitEvent } from 'ngx-saqly-login';
+import { SaqlyLoginComponent, SaqlyLoginConfig, SaqlyLoginSubmitEvent } from 'ngx-saqly-login';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [SaqlyLoginComponent],
-  template: `
-    <ngx-saqly-login
-      [loading]="loading"
-      (login)="onLogin($event)"
-    />
-  `,
+  template: `<ngx-saqly-login [loading]="loading" [config]="config" (login)="onLogin($event)" />`,
 })
 export class App {
   loading = false;
 
+  config: SaqlyLoginConfig = {
+    title: 'My App',
+    subtitle: 'Welcome back',
+    showRememberMe: true,
+    showSocialLogin: true,
+    mode: 'auto',
+  };
+
   onLogin(event: SaqlyLoginSubmitEvent): void {
     this.loading = true;
-    // call your auth service here
+    // call your auth service here, then set loading = false when done
     console.log(event.email, event.password, event.rememberMe);
   }
 }
 ```
 
-That's it. The component works out of the box with sensible defaults.
+That's it. `mode: 'auto'` follows the OS dark/light preference automatically. Set `loading = false` after your auth call completes to re-enable the form.
 
 ---
 
